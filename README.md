@@ -11,16 +11,25 @@ Points and lines
 Point data type. Create an immutable data type Point that represents a point in the plane by implementing the following API:
 
 public class Point implements Comparable<Point> {
-   public Point(int x, int y)                         // constructs the point (x, y)
 
-   public   void draw()                               // draws this point
-   public   void drawTo(Point that)                   // draws the line segment from this point to that point
-   public String toString()                           // string representation
+  // point data type
 
-   public               int compareTo(Point that)     // compare two points by y-coordinates, breaking ties by x-coordinates
-   public            double slopeTo(Point that)       // the slope between this point and that point
-   public Comparator<Point> slopeOrder()              // compare two points by slopes they make with this point
-}
+   public Point(int x, int y) {}                        // constructs the point (x, y)
+
+   public   void draw() {}                    // draws this point
+   
+   public   void drawTo(Point that)  {}                 // draws the line segment from this point to that point
+   
+   public String toString()      {}                     // string representation
+
+   public               int compareTo(Point that) {}    // compare two points by y-coordinates, breaking ties by x-coordinates
+   
+   public            double slopeTo(Point that) {}      // the slope between this point and that point
+   
+   public Comparator<Point> slopeOrder()  {}            // compare two points by slopes they make with this point
+   
+  }
+  
 To get started, use the data type Point.java, which implements the constructor and the draw(), drawTo(), and toString() methods. Your job is to add the following components.
 The compareTo() method should compare points by their y-coordinates, breaking ties by their x-coordinates. Formally, the invoking point (x0, y0) is less than the argument point (x1, y1) if and only if either y0 < y1 or if y0 = y1 and x0 < x1.
 The slopeTo() method should return the slope between the invoking point (x0, y0) and the argument point (x1, y1), which is given by the formula (y1 − y0) / (x1 − x0). Treat the slope of a horizontal line segment as positive zero; treat the slope of a vertical line segment as positive infinity; treat the slope of a degenerate line segment (between a point and itself) as negative infinity.
@@ -31,17 +40,30 @@ Corner cases. To avoid potential complications with integer overflow or floating
 Line segment data type. To represent line segments in the plane, use the data type LineSegment.java, which has the following API:
 
 public class LineSegment {
+
+  //Line data type
+
    public LineSegment(Point p, Point q)        // constructs the line segment between points p and q
+   
    public   void draw()                        // draws this line segment
+   
    public String toString()                    // string representation
+   
 }
+
 Brute force. Write a program BruteCollinearPoints.java that examines 4 points at a time and checks whether they all lie on the same line segment, returning all such line segments. To check whether the 4 points p, q, r, and s are collinear, check whether the three slopes between p and q, between p and r, and between p and s are all equal.
 
 public class BruteCollinearPoints {
+  // primitive and unefficient algorithm
+
    public BruteCollinearPoints(Point[] points)    // finds all line segments containing 4 points
+   
    public           int numberOfSegments()        // the number of line segments
+   
    public LineSegment[] segments()                // the line segments
+   
 }
+
 The method segments() should include each line segment containing 4 points exactly once. If 4 points appear on a line segment in the order p→q→r→s, then you should include either the line segment p→s or s→p (but not both) and you should not include subsegments such as p→r or q→r. For simplicity, we will not supply any input to BruteCollinearPoints that has 5 or more collinear points.
 
 Corner cases. Throw an IllegalArgumentException if the argument to the constructor is null, if any point in the array is null, or if the argument to the constructor contains a repeated point.
@@ -59,10 +81,16 @@ Points and slopes
 Write a program FastCollinearPoints.java that implements this algorithm.
 
 public class FastCollinearPoints {
+
+    // Efficient formula
    public FastCollinearPoints(Point[] points)     // finds all line segments containing 4 or more points
+   
    public           int numberOfSegments()        // the number of line segments
+   
    public LineSegment[] segments()                // the line segments
+   
 }
+
 The method segments() should include each maximal line segment containing 4 (or more) points exactly once. For example, if 5 points appear on a line segment in the order p→q→r→s→t, then do not include the subsegments p→s or q→t.
 
 Corner cases. Throw an IllegalArgumentException if the argument to the constructor is null, if any point in the array is null, or if the argument to the constructor contains a repeated point.
@@ -75,9 +103,14 @@ public static void main(String[] args) {
 
     // read the n points from a file
     In in = new In(args[0]);
+    
     int n = in.readInt();
+    
     Point[] points = new Point[n];
+    
     for (int i = 0; i < n; i++) {
+    
+    
         int x = in.readInt();
         int y = in.readInt();
         points[i] = new Point(x, y);
@@ -100,25 +133,3 @@ public static void main(String[] args) {
     }
     StdDraw.show();
 }
-Input format. We supply several sample input files (suitable for use with the test client above) in the following format: An integer n, followed by n pairs of integers (x, y), each between 0 and 32,767. Below are two examples.
-
-% cat input6.txt        % cat input8.txt
-6                       8
-19000  10000             10000      0
-18000  10000                 0  10000
-32000  10000              3000   7000
-21000  10000              7000   3000
- 1234   5678             20000  21000
-14000  10000              3000   4000
-                         14000  15000
-                          6000   7000
-% java-algs4 BruteCollinearPoints input8.txt
-(10000, 0) -> (0, 10000) 
-(3000, 4000) -> (20000, 21000) 
-
-% java-algs4 FastCollinearPoints input8.txt
-(3000, 4000) -> (20000, 21000) 
-(0, 10000) -> (10000, 0)
-
-% java-algs4 FastCollinearPoints input6.txt
-(14000, 10000) -> (32000, 10000) 
