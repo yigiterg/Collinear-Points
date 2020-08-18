@@ -13,18 +13,16 @@ public class FastCollinearPoints {
         checkForNull(points);
         Arrays.sort(points, Point::compareTo);
         checkForDuplicate(points);
-        //   ArrayList<Double> endPointSlope = new ArrayList<>();
-        //    ArrayList<Point> endPoints = new ArrayList<>();
         ArrayList<LineSegment> segmentList = new ArrayList<>();
         for (int i = 0; i < points.length - 3; i++) {
             //    int count = 0;
             Point origin = points[i];
             Arrays.sort(pointSlope);
             Arrays.sort(pointSlope, origin.slopeOrder());
-            Point lineStart = null;
+            Point lineStart;
             int count = 1;
             for (int j = 0; j < points.length - 1; j++) {
-                if (pointSlope[j].slopeTo(origin) == pointSlope[j + 1].slopeTo(origin)) {
+                if (origin.slopeOrder().compare(pointSlope[j],pointSlope[j+1]) == 0) {
                     count++;
                     if (count == 2) {
                         lineStart = pointSlope[j];
